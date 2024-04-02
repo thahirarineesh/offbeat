@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <style>
+        /* Add your custom styles here */
+        .order-details-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .order-details-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .order-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-summary-table th,
+        .order-summary-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-summary-table th {
+            background-color: #f2f2f2;
+        }
+
+        .order-summary-table tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .order-summary-table .product-image {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+        }
+
+        .order-summary-table .product-details {
+            vertical-align: middle;
+        }
+
+        .order-summary-table .price,
+        .order-summary-table .total {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<div class="order-details-container">
+    {% if order %}
+        <div class="order-details-header">Order Details - Order ID: {{ order.id }}</div>
+        <div>
+            <p><b>Order Date:</b> {{ order.date }}</p>
+            <p><b>Total Amount:</b> ₹{{ grand_total }}</p>
+            <p><b>Status:</b> {{ order.status }}</p>
+            <p><b>Payment Method:</b> {{ order.payment_type }}</p>
+            <p><b>Shipped To:</b></p>
+            <p>{{ order.address.first_name }} {{ order.address.last_name }}<br>
+                {{ order.address.address1 }}
+                {{ order.address.city }}<br> {{ order.address.state }} {{ order.address.zip_code }}<br>
+                {{ order.address.country }}
+            </p>
+        </div>
+        <table class="order-summary-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Products</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for order_item in order_items %}
+                <tr>
+                    <td><img src="{{ order_item.product.image.url }}" alt="Product Image" class="product-image"></td>
+                    <td class="product-details">{{ order_item.product.product_name }}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td class="price">₹{{ order_item.product.price }}</td>
+
+                    <td class="total">₹{{order_item.total  }}</td> <!-- Assuming total_price is calculated -->
+
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" style="text-align: right;">Sub Total</td>
+                    <td class="total">₹{{ subtotal }}</td> <!-- Assuming subtotal is calculated -->
+                </tr>
+
+                <tr>
+                    <td colspan="5" style="text-align: right;"><strong>Shipping</strong></td>
+                    <td class="shipping">₹{{ shipping }}</td> <!-- Assuming shipping cost is calculated -->
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right;"><strong>Discount</strong></td>
+                    <td class="discount">₹{{ discount }}</td> <!-- Assuming discount is calculated -->
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right;"><b>Grand Total</b></td>
+                    <td class="total">₹{{ grand_total }}</td> <!-- Assuming grand_total is calculated -->
+                </tr>
+            </tfoot>
+        </table>
+    {% endif %}
+    <br>
+    {% if order.status  == 'delivered' or order.status == 'completed' %}
+    <form action="{% url 'user_return_order' %}" method="post" class="return-form" style="margin-top:20px;">
+        {% csrf_token %}
+        <input type="hidden" name="order_id" value="{{ order.id }}">
+        <input type="hidden" name="order_item_id" value="{{ order_item.id }}">
+        <button type="submit" class="btn btn-warning btn-sm">Return Order</button>
+    </form>
+{% endif %}
+                                    {% if order.status == 'pending' or order.status == 'processing' %}
+<!--    <button type="button" class="btn btn-danger btn-sm" onclick="showCancelModal('{{ order.id }}')">Cancel Order</button>-->
+
+
+                                    <form action="{% url 'user_cancel_order' %}" method="post" class="cancel-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="showCancelModal('{{ order.id }}')">Cancel Order</button>
+
+                                    </form>
+                                {% endif %}
+    <br>
+                        <a href="{% url 'order_invoice' order.id %}" >Click Here To Get  Invoice</a>
+
+</div>
+
+
+<br>
+<!-- Add this section at the end of your template, just before the closing </body> tag -->
+<div id="returnModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Return Order Confirmation</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to return this order?</p>
+                <form id="returnOrderForm" method="post" action="{% url 'user_return_order' %}">
+    {% csrf_token %}
+    <input type="hidden" name="order_id" id="returnOrderId" value="{{ order.id }}">
+    {% for order_item in order.orderitem_set.all %}
+    <input type="hidden" name="order_item_ids" value="{{ order_item.id }}">
+    {% endfor %}
+    <div class="form-group">
+        <label for="returnReason">Reason for Return:</label>
+        <textarea class="form-control" id="returnReason" name="return_reason" rows="3" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-danger">Yes, Return Order</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Keep Order</button>
+</form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add this section at the end of your template, just before the closing </body> tag -->
+<div id="cancelModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cancel Order Confirmation</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this order?</p>
+                <form id="cancelOrderForm" method="post" action="{% url 'user_cancel_order' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" id="cancelOrderId" value="">
+                    <div class="form-group">
+                        <label for="cancelReason">Reason for Cancellation:</label>
+                        <textarea class="form-control" id="cancelReason" name="cancel_reason" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Yes, Cancel Order</button>
+<!--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Keep Order</button>-->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+<script>
+function showReturnModal(orderId, orderItemId) {
+    // Set the order_id and order_item_id in the form
+    document.getElementById('returnOrderId').value = orderId;
+    document.getElementById('returnOrderItemId').value = orderItemId;
+
+    // Show the modal
+    $('#returnModal').modal('show');
+}
+
+</script>
+
+<script>
+function showCancelModal(orderId) {
+    // Set the order ID in the hidden input field
+    document.getElementById('cancelOrderId').value = orderId;
+    // Show the modal
+    $('#cancelModal').modal('show');
+}
+</script>
+<script>
+    // Function to hide the messages container after a specific duration
+    function hideMessagesContainer() {
+        var messagesContainer = document.getElementById('messages-container');
+        if (messagesContainer) {
+            console.log('Hiding messages container');
+            setTimeout(function () {
+                messagesContainer.style.display = 'none';
+            }, 5000);  // Adjust the duration in milliseconds (e.g., 5000 for 5 seconds)
+        }
+    }
+
+    // Call the function on window load
+    window.onload = function () {
+        hideMessagesContainer();
+    };
+</script>
+{% endblock %}

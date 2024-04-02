@@ -1,0 +1,406 @@
+
+
+
+
+
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<br>
+<br>
+<center>
+    <h3 class="font-weight-semi-bold text-uppercase mb-3" style="color:#750a20">Our Products</h3>
+</center>
+<center>
+    <div class="d-inline-flex">
+        <p class="m-0"><a href="{% url 'home' %}">Home</a></p>
+        <p class="m-0 px-2">-</p>
+        <p class="m-0">Shop</p>
+    </div>
+</center>
+<br>
+<br>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left side for filters -->
+<div class="col-lg-3">
+    <div class="border-bottom mb-4 pb-4">
+    <h5 class="font-weight-semi-bold mb-4">Filters </h5>
+    <form method="get" action="">
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input" id="price-all" name="sort" value="all"
+                {% if 'all' in sort_option %}checked{% endif %}>
+            <label class="custom-control-label" for="price-all">Low to High</label>
+            <span class="badge border font-weight-normal">{{ total_product_count }}</span>
+        </div>
+
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input" id="price-1" name="sort" value="high"
+                {% if 'high' in sort_option %}checked{% endif %}>
+            <label class="custom-control-label" for="price-1">High to Low</label>
+            <span class="badge border font-weight-normal">{{ total_product_count }}</span>
+        </div>
+
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input category-checkbox" id="color-1" name="category" value="Watches"
+                {% if 'Watches' in selected_categories %}checked{% endif %}>
+            <label class="custom-control-label" for="color-1">Watches</label>
+        </div>
+
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input category-checkbox" id="color-2" name="category" value="Ear Phones"
+                {% if 'Ear Phones' in selected_categories %}checked{% endif %}>
+            <label class="custom-control-label" for="color-2">Ear Phones</label>
+        </div>
+
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input category-checkbox" id="color-3" name="category" value="Unisex Caps"
+                {% if 'Unisex Caps' in selected_categories %}checked{% endif %}>
+            <label class="custom-control-label" for="color-3">Unisex Caps</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
+
+</div>
+
+
+        <!-- Right side for products -->
+        <div class="col-lg-9 col-md-12  ">
+            <style>
+                /* Your existing CSS styling goes here */
+                .product-card {
+                    border: 1px solid #ddd;
+                    max-width: 300px;
+                    margin: auto;
+                }
+
+                .product-img:hover {
+                    transform: scale(1.05);
+                }
+
+                .product-img {
+                    object-fit: cover;
+                    height: 300px;
+                    width: 100%;
+                    transition: transform 0.3s;
+                }
+
+                .product-details {
+                    padding: 10px;
+                    text-align: left;
+                }
+
+                .product-name {
+                    font-size: 1.2rem;
+                    margin-bottom: 5px;
+                    padding-left:20px;
+                    text-align: left;
+                    margin-bottom: 0; /* Remove default bottom margin */
+                }
+
+                .product-description {
+                    font-size: 0.9rem;
+                    max-height: 60px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    flex-grow: 1;
+                    text-align: left;
+                    padding-left:20px;
+                }
+
+                .card-footer {
+                    padding: 10px;
+                }
+            </style>
+
+            <div class="row">
+                {% for product in data %}
+                    <div class="col-lg-4 col-md-4 col-sm-12 mb-4" style="cursor: pointer;">
+                        <div class="card product-card">
+                            <div class="position-relative overflow-hidden bg-transparent p-0" style="background-color: #f0f0f0;">
+                                <a href=""><img class="card-img-top img-fluid w-100 product-img" src="{{product.image.url}}"
+                                                alt="{{product.product_name}}"></a>
+                            </div>
+                            <div class="card-body text-center p-0 pt-4 pb-3 product-details">
+                                <h6 class="text-truncate mb-3 product-name">{{product.product_name}}</h6><hr>
+                                <div>
+                                    <h6 style="padding-right:200px;font-weight: bold;">₹{{ product.price }}</h6>
+                                </div>
+                                <div class="product-description" data-toggle="tooltip" data-placement="top"
+                                    title="{{ product.description }}">
+                                    {{ product.description }}
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href="{% url 'productdetail' product.id %}" class="btn btn-sm text-dark p-0"><i class="fa fa-eye "></i>&nbsp;View Detail</a>
+                                <a href="{% url 'add_to_cart' product_id=product.id %}" class="btn btn-primary" style="background-color:black;">Add to Cart</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sortProducts() {
+        var select = document.getElementById('sortSelect');
+        var selectedValue = select.options[select.selectedIndex].value;
+        var productsContainer = document.querySelector('.row');
+        var products = Array.from(productsContainer.children);
+
+        products.sort((a, b) => {
+            var aValue = getDataValue(a, selectedValue);
+            var bValue = getDataValue(b, selectedValue);
+
+            if (selectedValue.includes('price')) {
+                return sortNumeric(aValue, bValue);
+            } else {
+                return sortAlphanumeric(aValue, bValue);
+            }
+        });
+
+        productsContainer.innerHTML = '';
+
+        products.forEach(product => {
+            productsContainer.appendChild(product);
+        });
+    }
+
+    function getDataValue(element, criteria) {
+        switch (criteria) {
+            case 'popularity':
+            case 'priceLowToHigh':
+            case 'priceHighToLow':
+            case 'ratings':
+            case 'featured':
+            case 'newArrivals':
+                return parseFloat(element.querySelector('.product-details').getAttribute(`data-${criteria}`));
+            case 'aToZ':
+            case 'zToA':
+                return element.querySelector('.product-name').textContent.trim();
+            default:
+                return 0;
+        }
+    }
+
+    function sortNumeric(a, b) {
+        return a - b;
+    }
+
+    function sortAlphanumeric(a, b) {
+        return a.localeCompare(b);
+    }
+
+    function filterProducts() {
+        var filterPopularity = document.getElementById('filterPopularity').checked;
+        var filterNewArrivals = document.getElementById('filterNewArrivals').checked;
+        // Add more variables for other filters
+
+        var productsContainer = document.querySelector('.row');
+        var products = Array.from(productsContainer.children);
+
+        products.forEach(product => {
+            var productDetails = product.querySelector('.product-details');
+            var isPopularity = productDetails.getAttribute('data-popularity') > 0;
+            var isNewArrival = productDetails.getAttribute('data-newArrival') === 'true';
+            // Add more variables for other filters
+
+            product.style.display =
+                (filterPopularity && !isPopularity) ||
+                (filterNewArrivals && !isNewArrival)
+                // Add more conditions for other filters
+                ? 'none' : 'block';
+        });
+    }
+</script>
+
+<br>
+<br>
+
+{% endblock %}
+
+               <div class="col-lg-3">
+                    <div class="shop__sidebar">
+                        <form method="get" action="{% url 'product_list' %}">
+        <!-- Price filter checkboxes -->
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input" id="price-all" name="sort" value="all" {% if 'all' in sort_option %}checked{% endif %}>
+            <label class="custom-control-label" for="price-all">Low to High</label>
+            <span class="badge border font-weight-normal">{{ total_product_count }}</span>
+        </div>
+        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+            <input type="checkbox" class="custom-control-input" id="price-1" name="sort" value="high" {% if 'high' in sort_option %}checked{% endif %}>
+            <label class="custom-control-label" for="price-1">High to Low</label>
+            <span class="badge border font-weight-normal">{{ total_product_count }}</span>
+        </div>
+
+        <!-- Category filter checkboxes -->
+        <div class="shop__sidebar__categories">
+            <ul class="nice-scroll">
+                {% for category in categories %}
+                    <li>
+                        <input type="checkbox" id="category-{{ category.id }}" name="category" value="{{ category.category_name }}"
+                            {% if category.category_name in selected_categories %}checked{% endif %}>
+                        <label for="category-{{ category.id }}">{{ category.category_name }} ({{ category.products.count }})</label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Apply button -->
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+
+                    </div>
+                </div>
+
+
+
+
+<!--product_detail page-->
+!-- Shop Detail Start -->
+<style>
+    .fa-star{
+    color:black;
+    }
+
+
+
+</style>
+<br>
+<br>
+<br>
+    <div class="container-fluid ">
+        <div class="row px-xl-5">
+
+            <div class="col-lg-3 pb-5">
+                <div id="product-carousel" class="carousel slide w-100" data-ride="carousel">
+                    <div class="carousel-inner border">
+                        <div class="carousel-item active">
+                            <img class="w-100 h-100" src="{{ product.image.url }}" alt="Image">
+                        </div>
+
+                    </div>
+<!--                    <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">-->
+<!--                        <i class="fa fa-2x fa-angle-left text-dark"></i>-->
+<!--                    </a>-->
+<!--                    <a class="carousel-control-next" href="#product-carousel" data-slide="next">-->
+<!--                        <i class="fa fa-2x fa-angle-right text-dark"></i>-->
+<!--                    </a>-->
+                </div>
+            </div>
+        <!-- </div> -->
+            <div class="col-lg-5 pb-5">
+                <h3 class="font-weight-semi-bold">{{product.product_name}}</h3>
+                <div class="d-flex mb-3">
+                    <div class="text-primary mr-2" >
+                        <small class="fa fa-star" ></small>
+                        <small class="fa fa-star"></small>
+                        <small class="fa fa-star"></small>
+                        <small class="fa fa-star"></small>
+                        <small class="fa fa-star"></small>
+                    </div>
+                    <small class="pt-1">(50 Reviews)</small>
+                </div>
+                <div>
+<!--                    {% if product.discounted_price %}-->
+<!--                        <h6>₹{{ product.discounted_price }}</h6>-->
+<!--                        <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del></h6>-->
+<!--                    {% elif product.offer_price %}-->
+<!--                        <h6>₹{{ product.offer_price }}  </h6>-->
+<!--                        <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del> - {{ product.product_offer}}% off</h6>-->
+<!--                    {% else %}-->
+                        <h6>₹{{ product.price }}</h6>
+                    {% endif %}
+                </div>
+
+
+                <p class="mb-4">{{product.description }}</p>
+
+                <a href="{% url 'add_to_cart' product_id=product.id %}" class="btn btn-primary" style="background-color: black;">Add to Cart</a>
+                <a href="#" class="btn btn-primary" style="background-color: black;">Add to Wishlist</a>
+
+
+                <br>
+               <br>
+                <div class="d-flex pt-2">
+
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2" href="">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fa fa-instagram" style="color:black;"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fa fa-whatsapp" style="color:black;"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fa fa-pinterest"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        <div class="row px-xl-5">-->
+<!--            <div class="col">-->
+<!--                <div class="nav nav-tabs justify-content-center border-secondary mb-4">-->
+<!--                    <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>-->
+<!--                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>-->
+<!--                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>-->
+<!--                </div>-->
+
+<!--                        </div>-->
+<!--                    </div>-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<!--multiple products-->
+
+<!--                    <div class="col-lg-3 col-md-3">-->
+<!--                        <ul class="nav nav-tabs" role="tablist">-->
+<!--                            <li class="nav-item">-->
+<!--                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab" >-->
+<!--                                    <div class="product__thumb__pic set-bg" data-setbg="img/shop-details/thumb-1.png">-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item">-->
+<!--                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">-->
+<!--                                    <div class="product__thumb__pic set-bg" data-setbg="img/shop-details/thumb-2.png">-->
+
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item">-->
+<!--                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">-->
+<!--                                    <div class="product__thumb__pic set-bg" data-setbg="img/shop-details/thumb-3.png">-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item">-->
+<!--                                <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">-->
+<!--                                    <div class="product__thumb__pic set-bg" data-setbg="img/shop-details/thumb-4.png">-->
+
+<!--                                        <i class="fa fa-play"></i>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->

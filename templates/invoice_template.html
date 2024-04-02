@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title itemprop="name">Order Invoice</title>
+    <style>
+        /* Reset default margin and padding */
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Define A4 paper size */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        /* Apply styles to the entire page */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20mm; /* Adjust margins as needed */
+        }
+
+        /* Container for the invoice */
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px; /* Adjust padding as needed */
+            overflow: hidden; /* Ensure all content is captured */
+        }
+
+        /* Header styles */
+        .invoice h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* Address styles */
+        .invoice address {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Table styles */
+        .invoice table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice table th,
+        .invoice table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        /* Button styles */
+        #pdfButton {
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #pdfButton:hover {
+            background-color: #0056b3;
+        }
+
+        /* Adjust button position */
+         .download-button {
+            text-align: right;
+            margin-top: 20px;
+
+        }
+
+    </style>
+</head>
+<body>
+<div class="container invoice-container">
+    <div class="grid invoice">
+        <div class="grid-body">
+            <div class="invoice-title">
+                <h2>Invoice<br>
+                    <span class="small">Order No: {{ order.id }}</span>
+                </h2>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>From:</strong><br>
+                        Offbeat Outfitters<br>
+                        Industrial Area, Eastfort, Thrissur(P.O),<br>
+                        Thrissur(Dist), Kerala.<br>
+                        <abbr title="Phone">Phone:</abbr> +91 95629 71957
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Shipped To:</strong><br>
+                        Name: {{ order.address.first_name }} {{ order.address.last_name }}<br>
+                        Address: {{ order.address.address1 }}<br>
+                        {% if order.address.address2 %}
+                        {{ order.address.address2 }}<br>
+                        {% endif %}
+                        City: {{ order.address.city }}<br>
+                        Pincode: {{ order.address.zip_code }}<br>
+                        <abbr title="Phone">Phone:</abbr> {{ order.address.number }}
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Payment Method:</strong>
+                        {{ order.payment_type }}
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Order Date:</strong>
+                        {{ order.date|date:"F j, Y" }}
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>ORDER SUMMARY</h3>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr class="line">
+                            <th><strong>Products</strong></th>
+                            <th class="text-right"><strong>Quantity</strong></th>
+                            <th class="text-right"><strong>Price</strong></th>
+                            <th class="text-right"><strong>Total</strong></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order_item in order_items %}
+                        <tr>
+                            <td><strong>{{ order_item.product.product_name }}</strong></td>
+                            <td class="text-right">{{ order_item.quantity }}</td>
+                            <td class="text-right">₹{{ order_item.product.price }}</td>
+                            <td class="text-right">₹{{ order_item.total }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="3"><strong>Sub Total</strong></td>
+                            <td class="text-right"><strong>₹{{ subtotal }}</strong></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3"><strong>Shipping</strong></td>
+                            <td class="text-right"><strong>₹{{ shipping }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Discount</strong></td>
+                            <td class="text-right"><strong>₹{{ discount }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Grand Total</strong></td>
+                            <td class="text-right"><strong>₹{{ grand_total }}</strong></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 ">
+        <button id="pdfButton">Download Invoice</button>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+    document.getElementById("pdfButton").addEventListener("click", function () {
+        const invoiceContainer = document.querySelector(".invoice-container");
+        const pdfOptions = {
+            filename: 'invoice.pdf',
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(invoiceContainer).set(pdfOptions).save();
+    });
+
+</script>
+</body>
+</html>

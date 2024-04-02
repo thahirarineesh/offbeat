@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<br>
+<center>
+    <h3 class="font-weight-semi-bold text-uppercase mb-3" style="color:#750a20">Shopping Cart</h3>
+</center>
+<center>
+    <div class="d-inline-flex">
+        <p class="m-0"><a href="{% url 'home' %}">Home</a></p>
+        <p class="m-0 px-2">-</p>
+        <p class="m-0">Shop</p>
+    </div>
+</center>
+
+
+<!-- Cart Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5">
+        <div class="col-lg-8 table-responsive mb-5">
+            <table class="table table-bordered text-center mb-0">
+                <!--                    <thead class="bg-secondary text-dark">-->
+                <!--                        <tr>-->
+                <!--                            <th colspan="2">Products</th>-->
+                <!--                            <th>Price</th>-->
+                <!--                            <th>Quantity</th>-->
+                <!--                            <th>Total</th>-->
+                <!--                            <th>Remove</th>-->
+                <!--                        </tr>-->
+                <!--                    </thead>-->
+                <tbody class="align-middle">
+                {% for cart_item in cart_items %}
+                <tr>
+                    <div class="input-group-prepend">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ cart_item.product.image.url }}" alt=""
+                                 style="width: 150px; height:150px; margin-right: 10px;">
+                            <div>
+                                <h6 class="mb-1">{{ cart_item.product.product_name }}</h6>
+                                <p class="mb-1">
+
+                                    {% if cart_item.product.product_offer %}
+                                    ₹{{ cart_item.product.price }}
+                                    {% else %}
+                                    ₹{{ cart_item.product.price }}
+                                    {% endif %}
+                                <p style="{% if cart_item.product.stock > 0 %}color: green;{% else %}color: red;{% endif %}">
+                                    {% if cart_item.product.stock > 0 %}
+                                    In Stock
+                                    {% else %}
+                                    Out of Stock
+                                    {% endif %}</p>
+                                <p>Quantity:
+                                    <span id="quantity-display-{{ cart_item.id }}">{{ cart_item.quantity }}</span>
+                                <div class="input-group mb-3" style="max-width: 120px;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-sm btn-primary"
+                                                onclick="updateQuantity('{{ cart_item.product.id }}', 'decrease')"
+                                                style="background-color:black;">-
+                                        </button>
+
+                                    </div>
+                                    <input id="quantity-input-{{ cart_item.product.id }}" type="number" min="1"
+                                           class="form-control text-center" value="{{ cart_item.quantity }}"
+                                           placeholder=""
+                                           aria-label="Example text with button addon" aria-describedby="button-addon1"
+                                           size="2" style="width: 20px; font-size: 12px;">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm btn-primary"
+                                                onclick="updateQuantity('{{ cart_item.product.id }}', 'increase')"
+                                                style="background-color:black;">+
+                                        </button>
+
+                                    </div>
+                                </div>
+
+
+                                </p>
+                                <div class="input-group mb-1" style="max-width: 200px;">
+                                    <form id="removeForm{{ cart_item.id }}"
+                                          action="{% url 'remove_from_cart' cart_item.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-primary delete-btn" type="button"
+                                                onclick="confirmRemove('{{ cart_item.id }}')"
+                                                style="background-color:black;"><i class="">Remove</i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+
+                    <br>
+                    <hr>
+
+                    </td>
+
+                </tr>
+                {% endfor %}
+                </tbody>
+
+
+            </table>
+        </div>
+
+
+        <div class="col-lg-4">
+            {% if messages %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <form method="post" class="mb-5" action="{% url 'apply_coupon' %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control p-4" placeholder="Coupon Code" list="couponList"
+                           name="coupon_code">
+                    <datalist id="couponList">
+                        {% for coupon in coupons %}
+                        <option value="{{ coupon.coupon_code }}">
+                            {% endfor %}
+                    </datalist>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" style="background-color:black;">Apply Coupon</button>
+                    </div>
+                </div>
+            </form>
+            {% if request.session.discount %}
+            <form method="post" action="{% url 'apply_coupon' %}">
+                {% csrf_token %}
+                <input type="hidden" name="remove_coupon" value="true">
+                <button class="btn btn-danger" type="submit" style="margin-top:-50px;margin-left:225px;">Remove Coupon
+                </button>
+            </form>
+            {% endif %}
+            <div class="card border-secondary mb-5">
+                <div class="card-header ">
+                    <centre><h4 class="font-weight-semi-bold m-0" style="color:black;"> Price Details</h4></centre>
+                </div>
+                <div class="card-body">
+                    {% for cart_item in cart_items %}
+                    <div class="d-flex ">
+
+                        <div class="col-lg-6">
+                            <p>{{ cart_item.product.product_name }}</p>
+                        </div>
+                        <div class="col-lg-4">
+                            <p>₹{{ cart_item.product.price }}</p>
+                        </div>
+                        <div class="col-lg">
+                            <p>x{{ cart_item.quantity }}</p>
+                        </div>
+
+                    </div>
+                    {% endfor %}<br>
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 style="color: green;" class="font-weight-medium"><strong>Coupon Discount</strong></h6>
+                        {% if request.session.discount %}
+                        <h6 style="color: green;" class="font-weight-medium">₹{{ request.session.discount }}</h6>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">total </h6>
+                        <h6 class="font-weight-medium">₹{{ subtotal }}</h6>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <h6 class="font-weight-medium">Shipping Charge</h6>
+                        {% if cart_items %}
+                        <h6 class="font-weight-medium">₹60</h6>
+                        {% else %}
+                        <h6 class="font-weight-medium">₹0</h6>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5 class="font-weight-bold">Grand Total</h5>
+                        <h5 class="font-weight-bold">₹{{ total }}</h5>
+                    </div>
+                    <br>
+{% if cart_items %}
+    {% for cart_item in cart_items %}
+        {% if cart_item.product.stock <= 0 %}
+            <p style="color:red">Sorry, the product "{{ cart_item.product.product_name }}" is currently out of stock.</p>
+        {% endif %}
+    {% endfor %}
+    <a href="{% url 'checkout' %}" class="btn btn-block btn-primary my-3 py-3" style="background-color:black">Proceed To Checkout</a>
+{% else %}
+    <p style="color:red">Your cart is empty</p>
+{% endif %}
+
+<a href="{% url 'product_list' %}" class="btn btn-block btn-primary my-3 py-3" style="background-color:black">Continue Shopping</a>
+
+
+                    <!--                        {% if cart_items %}-->
+                    <!--                            <a href="{% url 'checkout' %}" class="btn btn-block btn-primary my-3 py-3" style="background-color:black">Proceed To Checkout</a>-->
+                    <!--                        {% else %}-->
+                    <!--                        <p style="color:red">Your cart is empty</p>-->
+                    <!--                            <a href="{% url 'product_list' %}" class="btn btn-block btn-primary my-3 py-3" style="background-color:black">Continue Shopping</a>-->
+                    <!--                        {% endif %}-->
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#messages-container').fadeOut('slow');
+            }, 1000); // 1 second delay before fading out
+        });
+
+</script>
+<script>
+    function confirmRemove(cartItemId) {
+        var confirmation = confirm("Are you sure you want to remove this item from your cart?");
+        if (confirmation) {
+            // If confirmed, submit the form
+            document.getElementById('removeForm' + cartItemId).submit();
+        } else {
+            // If canceled, do nothing
+        }
+    }
+
+</script>
+
+<script>
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+
+            for (var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+
+                if (name === cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+
+            return null;
+        }
+
+        function updateQuantity(productId, action) {
+            var quantityInput = document.getElementById('quantity-input-' + productId);
+            var quantity = parseInt(quantityInput.value);
+            var maxQuantityPerPerson = 2;
+
+
+            if (action === 'increase') {
+                quantity += 1;
+            } else if (action === 'decrease') {
+                quantity -= 1;
+            }
+
+            if (quantity < 1) {
+                alert('Quantity must be at least 1.');
+                return;
+            }else if (quantity > maxQuantityPerPerson) {
+                 alert('You can only add up to 2 unit of this product to your cart.');
+                 return ;
+            }
+
+            var csrfToken = getCookie('csrftoken');
+
+            fetch(`/update-cart/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    'quantity': quantity
+                })
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error updating cart item.');
+                }
+            })
+            .then(function(data) {
+                console.log(data.message);
+                location.reload();
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('Error updating cart item.');
+            });
+        }
+
+</script>
+
+{% endblock %}
+<!-- Cart End -->
+
+
+
+
+
+
+

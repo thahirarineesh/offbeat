@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+      .product-description {
+                    font-size: 0.9rem;
+                    max-height: 60px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    flex-grow: 1;
+                    text-align: left;
+
+                }
+
+</style>
+<br>
+<center>
+    <h3 class="font-weight-semi-bold text-uppercase mb-3" style="color:black;">Our Products</h3>
+</center>
+<center>
+    <div class="d-inline-flex">
+        <p class="m-0"><a href="{% url 'home' %}">Home</a></p>
+        <p class="m-0 px-2">-</p>
+        <p class="m-0">Shop</p>
+    </div>
+</center>
+<br>
+<br>
+<br>
+<!-- Shop Section Begin -->
+<!--    <section class="shop spad">-->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="shop__sidebar">
+
+                <h4>Filters</h4>
+                <hr>
+                <br>
+                <div class="shop__sidebar__accordion">
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+
+                            <form method="get" action="{% url 'product_list' %}">
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+
+                            <input type="checkbox" class="custom-control-input" id="price-all" name="sort" value="all"
+                                {% if 'all' in sort_option %}checked{% endif %}>
+
+                            <label class="custom-control-label" for="price-all">Low to High</label>
+                            <span class="badge border font-weight-normal">{{ total_product_count }}</span>
+                        </div>
+
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="price-1" name="sort" value="high"
+                                {% if 'high' in sort_option %}checked{% endif %}>
+                            <label class="custom-control-label" for="price-1">High to Low</label>
+                            <span class="badge border font-weight-normal">{{ total_product_count }}</span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input category-checkbox" id="color-1" name="category" value="Wallet" {% if 'Wallet' in categories %}checked{% endif %}>
+                            <label class="custom-control-label" for="color-1">Wallet</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input category-checkbox" id="color-2" name="category" value="sling bag" {% if 'sling bag' in categories %}checked{% endif %}>
+                            <label class="custom-control-label" for="color-2">sling bag</label>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input category-checkbox" id="color-3" name="category" value="Back Bags" {% if 'Back Bags' in selected_categories %}checked{% endif %}>
+                            <label class="custom-control-label" for="color-3">Back Bags</label>
+                        </div>
+                                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input category-checkbox" id="color-4" name="category" value="side bag" {% if 'side bag' in selected_categories %}checked{% endif %}>
+                            <label class="custom-control-label" for="color-4">side bag</label>
+                        </div>
+                                <br>
+                        <button type="submit" class="btn btn-primary" style="background-color:black">Apply</button>
+                    </form>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="shop__product__option">
+                <!--                        <div class="row">-->
+                <!--                            -->
+                <!--                            <div class="col-lg-6 col-md-6 col-sm-6">-->
+                <!--                                <div class="shop__product__option__right">-->
+                <!--                                    <p>Sort by Price:</p>-->
+                <!--                                    <select>-->
+                <!--                                        <option value="">Low To High</option>-->
+                <!--                                        <option value="">$0 - $55</option>-->
+                <!--                                        <option value="">$55 - $100</option>-->
+                <!--                                    </select>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+            </div>
+            <div class="row">
+                {% if page_obj %}
+                {% for product in page_obj %}
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="product__item">
+                        <a href="{% url 'productdetail' product.id %}">
+                            <div class="product__item__pic set-bg" data-setbg="{{ product.image.url }}">
+                                <img class="w-100 h-100" src="{{ product.image.url }}" alt="Image">
+                                <ul class="product__hover">
+                                    <li><a href="{% url 'add_to_wishlist' product_id=product.id %}"><img
+                                            src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
+                                    <!--                                        <li><a href="#"><img src="{% static 'img/compare.png' %}" alt=""> <span>Compare</span></a>-->
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </a>
+                        <div class="product__item__text">
+                            <h6>{{product.product_name}}</h6>
+                            <div class="product-description" data-toggle="tooltip" data-placement="top"
+                                 title="{{ product.description }}">
+                                {{ product.description }}
+                            </div>
+                            <div class="rating">
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+                            <h5>₹{{ product.price }}</h5>
+                            <!--                                    <div class="product__color__select">-->
+                            <!--                                        <label for="pc-4">-->
+                            <!--                                            <input type="radio" id="pc-4">-->
+                            <!--                                        </label>-->
+                            <!--                                        <label class="active black" for="pc-5">-->
+                            <!--                                            <input type="radio" id="pc-5">-->
+                            <!--                                        </label>-->
+                            <!--                                        <label class="grey" for="pc-6">-->
+                            <!--                                            <input type="radio" id="pc-6">-->
+                            <!--                                        </label>-->
+                            <!--                                    </div>-->
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+                {% endif %}
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="product__pagination">
+                        {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <a class="active" href="?page={{ num }}">{{ num }}</a>
+                        {% else %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <!--                    <div class="row">-->
+            <!--                        <div class="col-lg-12">-->
+            <!--                            <div class="product__pagination">-->
+            <!--                                <a class="active" href="#">1</a>-->
+            <!--                                <a href="#">2</a>-->
+            <!--                                <a href="#">3</a>-->
+            <!--                                <span>...</span>-->
+            <!--                                <a href="#">21</a>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+        </div>
+    </div>
+</div>
+
+<!--    </section>-->
+<!-- Shop Section End -->
+<!-- Search Begin -->
+<div class="search-model">
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div class="search-close-switch">+</div>
+        <form class="search-model-form">
+            <input type="text" id="search-input" placeholder="Search here.....">
+        </form>
+    </div>
+</div>
+{% endblock %}

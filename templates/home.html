@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+
+<div class="col-lg-3 col-md-3">
+
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+
+
+    <!-- Banner Section Begin -->
+    <section class="banner spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 offset-lg-4">
+                    <div class="banner__item">
+                        <div class="banner__item__pic">
+                            <img src="{% static 'img/handbag.png' %}" alt="">
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>Hand Bag Collections 2024</h2>
+                            <a href="#">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Banner Section End -->
+
+<!--    &lt;!&ndash; Product Section Begin &ndash;&gt;-->
+<!--    <section class="product spad">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-lg-12">-->
+<!--                    <ul class="filter__controls">-->
+<!--                        <li class="active" data-filter="*">Best Sellers</li>-->
+<!--&lt;!&ndash;                        <li data-filter=".new-arrivals">New Arrivals</li>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <li data-filter=".hot-sales">Hot Sales</li>&ndash;&gt;-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row product__filter">-->
+<!--                {% for product in data %}-->
+<!--                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">-->
+<!--                    <div class="product__item">-->
+<!--                        <div class="product__item__pic set-bg" data-setbg="{{ product.image.url }}">-->
+<!--&lt;!&ndash;                            <span class="label">New</span>&ndash;&gt;-->
+<!--                            <ul class="product__hover">-->
+<!--                                <li><a href="#"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>-->
+<!--                                <li><a href="#"><img src="{% static 'img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>-->
+<!--                                <li><a href="#"><img src="{% static 'img/icon/search.png' %}" alt=""></a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+<!--                {% endfor %}-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock%}

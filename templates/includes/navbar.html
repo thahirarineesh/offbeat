@@ -1,0 +1,285 @@
+{% load static %}
+<style>
+<!--
+.header__top__link {
+    margin-right: 15px; /* Adjust the spacing between links */
+    text-decoration: none; /* Remove underline from links */
+    color: #fff; /* Set the color for links */
+}
+
+.header__top__hover {
+    margin-left: 15px; /* Adjust the spacing between the dropdown and links */
+}
+    .user-icon {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+
+    .user-icon:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+    margin-right:70px;
+    color:black;
+    }
+    .user-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f9f9f9;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.user-icon:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+        color:black;
+
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+#search-input::placeholder {
+    font-size: 16px; /* Adjust the font size as needed */
+    color: #888; /* Placeholder text color */
+    letter-spacing: 2px;
+
+}
+#search-input {
+    width: 350px; /* Adjust the width as needed */
+
+}
+
+
+</style>
+
+   <!-- Page Preloder -->
+<!--    <div id="preloder">-->
+<!--        <div class="loader"></div>-->
+<!--    </div>-->
+
+
+
+    <!-- Header Section Begin -->
+    <header class="header" >
+        <div class="header__top" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7">
+                        <div class="header__top__left">
+                            <p>Welcome to Offbeat.. Shop till you drop!</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+    <div class="header__top__right" style="margin-left:350px;">
+        {% if user.is_authenticated %}
+             <div class="user-icon">
+    <!-- Font Awesome user icon -->
+
+    <i class="fa fa-user-circle fa-2x" style="color: #d4d0c4;"></i>
+                 <i class="fa fa-chevron-down" style="color: #d4d0c4;"></i>
+
+
+    <!-- Dropdown content -->
+    <div class="dropdown-content">
+        <div class="dropdown-item">
+            <p style="color: green; margin: 0;">Hello, {{user.username}}</p>
+        </div>
+        <div class="dropdown-item">
+            <a href="{% url 'edit_profile' %}">Profile</a>
+        </div>
+        <div class="dropdown-item">
+            <a href="{% url 'my_orders' %}"> Orders</a>
+        </div>
+        <div class="dropdown-item">
+       <a href="{% url 'wallet' %}">Wallet</a>
+</div>
+
+
+        <div class="dropdown-item">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+  </div>
+   <a href="{% url 'logout' %}" style="color:white;margin-left:40px;"> Logout</a>
+        {% else %}
+            <a href="{% url 'signup' %}" class="header__top__link">Register</a> <a style="color:white">|</a><pre>  </pre>
+            <a href="{% url 'login' %}" class="header__top__link">Login</a>
+
+        {% endif %}
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <nav class="header__menu mobile-menu">
+                <!-- your navigation menu code -->
+                  <ul>
+            <li class="active"><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'product_list' %}">Shop</a></li>
+            <li><a href="{% url 'contact' %}">About Us</a></li>
+
+
+        </ul>
+            </nav>
+        </div>
+        <div >
+    <div class="header__nav__option d-flex align-items-center"> <!-- Added d-flex and align-items-center -->
+        <div class="col-lg-6 col-6 text-left">
+            <form method="get" action="{% url 'search' %}">
+                <div class="input-group">
+                    <label for="search-input" class="sr-only">Search for products</label>
+                    <input type="text" id="search-input" class="form-control" name="q" placeholder="Search for products">
+                    <!-- Adjusted placeholder text to make it more lengthy -->
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-success" style="background-color:black;">
+                            <i class="fa fa-search" ></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+         <a href="{% url 'wishlist_view' %}" class="btn border">
+                    <i class="fa fa-heart " style="color:red;"></i>
+                    <!-- <span class="badge">0</span> -->
+                </a>
+                <a href="{% url 'cart' %}" class="btn border">
+                    <i class="fa fa-shopping-cart " style="color:black;"></i>
+                    <!-- <span class="badge">0</span> -->
+                </a>
+
+        </a>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+
+<hr>
+
+
+
+
+
+
+
+
+
+<!--        -->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--&lt;!&ndash;                <div class="col-lg-2 col-md-2">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="header__logo">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <a href=""><img src="img/adminlogo.png" alt=""> </a>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                <div class="col-lg-6 col-md-6">-->
+<!--    <nav class="header__menu mobile-menu">-->
+<!--        <ul>-->
+<!--            <li class="active"><a href="{% url 'home' %}">Home</a></li>-->
+<!--            <li><a href="{% url 'product_list' %}">Shop</a></li>-->
+<!--            <li><a href="#">Pages</a>-->
+<!--                <ul class="dropdown">-->
+<!--                    <li><a href="./about.html">About Us</a></li>-->
+<!--                    <li><a href="./shop-details.html">Shop Details</a></li>-->
+<!--                    <li><a href="./shopping-cart.html">Shopping Cart</a></li>-->
+<!--                    <li><a href="./checkout.js.html">Check Out</a></li>-->
+<!--                    <li><a href="./blog-details.html">Blog Details</a></li>-->
+<!--                </ul>-->
+<!--            </li>-->
+<!--            <li><a href="./blog.html">Blog</a></li>-->
+<!--            <li><a href="./contact.html">Contacts</a></li>-->
+
+
+<!--        </ul>-->
+<!--    </nav>-->
+<!--</div>-->
+<!--                <div class="col-lg-3 col-md-3">-->
+<!--                    <div class="header__nav__option">-->
+<!--      <div class="col-lg-6 col-6 text-left">-->
+<!--                <form method="get" action="{% url 'search' %}">-->
+<!--                    <div class="input-group">-->
+<!--                        <label for="search-input" class="sr-only">Search for products</label>-->
+<!--                        <input type="text" id="search-input" class="form-control" name="q" placeholder="Search for products">-->
+<!--                        <div class="input-group-append">-->
+<!--                            <button type="submit" class="btn btn-primary">-->
+<!--                                <i class="fa fa-search"></i>-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </form>-->
+
+<!--            </div>-->
+
+<!--                        <a href="{% url 'wishlist_view' %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a>-->
+<!--                        <a href="{% url 'cart' %}"><img src="{% static 'img/icon/cart.png' %}" alt="">-->
+<!--                            <span style=" color: red; ">{{cart_items.count}}</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--            </div>-->
+<!--        </div>-->
+    </header>
+<div class="search-model">
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div class="search-close-switch">+</div>
+        <form class="search-model-form">
+            <div class="search-input-container">
+                <input type="text" id="search-input" placeholder="Search here.....">
+                <button type="button" id="searchButton">&#128269;</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Your existing script -->
+<script>
+    $(document).ready(function () {
+        // Search switch click event
+        $(".search-switch").click(function () {
+            // Toggle the search model
+            $(".search-model").toggleClass("active");
+        });
+
+        // Search close switch click event
+        $(".search-close-switch").click(function () {
+            // Close the search model
+            $(".search-model").removeClass("active");
+        });
+
+        // Search button click event
+        $("#searchButton").click(function () {
+            // Get the search query from the input field
+            var query = $("#search-input").val();
+
+            // Alert the query (for testing)
+            alert("Search query: " + query);
+        });
+    });
+</script>

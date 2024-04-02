@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block content %}
+ <!-- Shop Product Start -->
+ {% if query %}
+            <h2>Search Results for "{{ query }}"</h2>
+            <div class="col-lg-9 col-md-12">
+                <div class="row pb-3">
+                    <div class="col-12 pb-1">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <form action="">
+
+                            </form>
+
+                        </div>
+                    </div>
+
+                        {% if page_obj %}
+                        {% for product in page_obj %}
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                <a href="{% url 'productdetail' product.id %}">
+                                <div class="product__item__pic set-bg" data-setbg="{{ product.image.url }}" >
+                                    <img class="w-100 h-100" src="{{ product.image.url }}" alt="Image" >
+                                    <ul class="product__hover">
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                </a>
+                                <div class="product__item__text">
+                                    <h6>{{product.product_name}}</h6>
+                                    <div class="product-description" data-toggle="tooltip" data-placement="top"
+                                    title="{{ product.description }}">
+                                    {{ product.description }}
+                                </div>
+                                    <a href="{% url 'add_to_cart' product_id=product.id %}" class="add-cart">+ Add To Cart</a>
+                                    <div class="rating">
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                    </div>
+                                    <h5>₹{{ product.price }}</h5>
+<!--                                    <div class="product__color__select">-->
+<!--                                        <label for="pc-4">-->
+<!--                                            <input type="radio" id="pc-4">-->
+<!--                                        </label>-->
+<!--                                        <label class="active black" for="pc-5">-->
+<!--                                            <input type="radio" id="pc-5">-->
+<!--                                        </label>-->
+<!--                                        <label class="grey" for="pc-6">-->
+<!--                                            <input type="radio" id="pc-6">-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+                                </div>
+                            </div>
+
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center">
+                            <p style="color: rgb(228, 10, 10); padding-left: 455px; font-weight: bold;">No products found!!!</p>
+                        </div>
+                    {% endif %}
+
+
+
+
+
+    <div class="col-lg-12">
+        <div class="product__pagination">
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="active" href="?page={{ num }}">{{ num }}</a>
+                {% else %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+<!--                    {% if page_obj %}-->
+<!--                        {% for product in page_obj %}-->
+<!--                            <div class="col-lg-4 col-md-6 col-sm-12 pb-1" style="cursor: pointer;">-->
+<!--                                <div class="card product-item border-0 mb-4">-->
+<!--                                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">-->
+<!--                                        <a href="{% url 'productdetail' product.id %}"><img class="img-fluid w-100" src="{{product.image.url}}" alt=""></a>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">-->
+<!--                                        <h6 class="text-truncate mb-3">{{product.product_name}}</h6>-->
+<!--                                        <div class="d-flex justify-content-center">-->
+<!--                                            {% if product.discounted_price %}-->
+<!--                                                <h6>₹{{ product.discounted_price }}</h6>-->
+<!--                                                <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del></h6>-->
+<!--                                            {% elif product.offer_price %}-->
+<!--                                                <h6>₹{{ product.offer_price }}</h6>-->
+<!--                                                <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del>  - {{ product.product_offer}}% off</h6>-->
+<!--                                            {% else %}-->
+<!--                                                <h6>₹{{ product.price }}</h6>-->
+<!--                                            {% endif %}-->
+<!--                                        </div>-->
+
+<!--                                        <div style="max-height: 80px;">-->
+<!--                                            <p class="card-text font-weight-bold" data-toggle="tooltip" data-placement="top" title="{{ product.description }}">-->
+<!--                                                {{ product.description }}-->
+<!--                                            </p>-->
+<!--                                        </div>-->
+
+
+<!--                                    </div>-->
+<!--                                    <div class="card-footer d-flex justify-content-between bg-light border">-->
+<!--                                        <a href="{% url 'productdetail' product.id %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>-->
+<!--                                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        {% endfor %}-->
+
+
+
+<!--                    {% else %}-->
+<!--                        <div class="text-center">-->
+<!--                            <p style="color: rgb(228, 10, 10); padding-left: 455px; font-weight: bold;">No products found!!!</p>-->
+<!--                        </div>-->
+<!--                    {% endif %}-->
+
+
+
+                </div>
+            </div>
+{% endif %}
+
+<!--    &lt;!&ndash; Your existing content goes here &ndash;&gt;-->
+
+<!--    &lt;!&ndash; Display search results &ndash;&gt;-->
+<!--    <div class="search-results">-->
+<!--        {% if query %}-->
+<!--            <h2>Search Results for "{{ query }}"</h2>-->
+<!--            {% if page_obj.has_previous or page_obj.has_next %}-->
+<!--                <div class="pagination">-->
+<!--                    <span class="step-links">-->
+<!--                        {% if page_obj.has_previous %}-->
+<!--                            <a href="?q={{ query }}&page=1">&laquo; first</a>-->
+<!--                            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">previous</a>-->
+<!--                        {% endif %}-->
+
+<!--                        <span class="current">-->
+<!--                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.-->
+<!--                        </span>-->
+
+<!--                        {% if page_obj.has_next %}-->
+<!--                            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">next</a>-->
+<!--                            <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>-->
+<!--                        {% endif %}-->
+<!--                    </span>-->
+<!--                </div>-->
+<!--            {% endif %}-->
+
+<!--            {% for product in page_obj %}-->
+<!--                &lt;!&ndash; Display each product &ndash;&gt;-->
+<!--                <div class="product">-->
+<!--                    <h3>{{ product.product_name }}</h3>-->
+<!--                    &lt;!&ndash; Add other product details as needed &ndash;&gt;-->
+<!--                </div>-->
+<!--            {% endfor %}-->
+
+<!--            {% if page_obj.has_previous or page_obj.has_next %}-->
+<!--                <div class="pagination">-->
+<!--                    <span class="step-links">-->
+<!--                        {% if page_obj.has_previous %}-->
+<!--                            <a href="?q={{ query }}&page=1">&laquo; first</a>-->
+<!--                            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">previous</a>-->
+<!--                        {% endif %}-->
+
+<!--                        <span class="current">-->
+<!--                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.-->
+<!--                        </span>-->
+
+<!--                        {% if page_obj.has_next %}-->
+<!--                            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">next</a>-->
+<!--                            <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>-->
+<!--                        {% endif %}-->
+<!--                    </span>-->
+<!--                </div>-->
+<!--            {% endif %}-->
+<!--        {% endif %}-->
+<!--    </div>-->
+{% endblock %}

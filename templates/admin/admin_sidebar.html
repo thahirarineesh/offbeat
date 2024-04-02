@@ -1,0 +1,137 @@
+{% load static %}
+
+<style>
+.menu-aside .menu-item.active .menu-link {
+    background-color: white;
+}
+.menu-aside .menu-item.active .icon {
+    color:#ccd4d3;
+}
+.menu-aside .menu-link {
+    padding: 10px;
+    font-weight: 500;
+    font-size: 13px;
+    color: #292f46;
+    border-radius: 0.3rem;
+    position: relative;
+}
+</style>
+<div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+           <a href="{% url 'dashboard' %}" class="brand-wrap"><center> &nbsp;<h1 style="color:#0B5345;"><b>&nbsp;&nbsp;Offbeat</b></h1></center>
+            </a>
+        </div><br>
+        <div class="d-flex align-items-center ms-4 mb-4">
+        <div class="position-relative">
+            <img class="rounded-circle" src="{% static 'img/user-3.png' %}" alt="" style="width: 40px; height: 40px;">
+            <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+        </div>
+        <div class="ms-3">
+            <h6 class="mb-0">Thahira</h6>
+            <span>Admin</span>
+        </div>
+    </div>
+        <nav>
+            <ul class="menu-aside" >
+                <li class="menu-item active"  >
+                    <a class="menu-link" href="{% url 'dashboard' %}"> <i class="icon material-icons md-home"></i>
+                        <span class="text" >Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                     <a class="menu-link" href="{% url 'customer' %}">
+                         <i class="icon material-icons md-person"></i>
+                         <span class="text">Customers</span>
+                     </a>
+                </li>
+                <li class="menu-item">
+                     <a class="menu-link" href="{% url 'category' %}">
+                         <i class="icon material-icons md-store"></i>
+                         <span class="text">Category</span>
+                     </a>
+                </li>
+                <li class="menu-item">
+                     <a class="menu-link" href="{% url 'products' %}">
+                         <i class="icon material-icons md-shopping_cart"></i>
+                         <span class="text">Products</span>
+                     </a>
+                </li>
+                <li class="menu-item">
+                     <a class="menu-link" href="{% url 'order' %}">
+                         <i class="icon material-icons md-shopping_bag"></i>
+                         <span class="text">Orders</span>
+                     </a>
+                </li>
+                <li class="menu-item">
+                     <a class="menu-link" href="{% url 'coupon' %}">
+                         <i class="icon material-icons md-monetization_on"></i>
+                         <span class="text">Coupon</span>
+                     </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="{% url 'report_pdf_order' %}"> <i class="icon material-icons md-comment"></i>
+                        <span class="text">Sales Report</span>
+                    </a>
+                </li>
+
+
+            </ul>
+
+
+            <br>
+            <br>
+        </nav>
+    </aside>
+</div>
+<main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+<!--                        <option value="Products">-->
+<!--                        <option value="New orders">-->
+<!--                        <option value="Apple iphone">-->
+<!--                        <option value="Ahmed Hassan">-->
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#" onclick="toggleDarkMode()"> <i class="material-icons md-nights_stay"></i> </a>
+
+<!--                        <a class="nav-link btn-icon darkmode" href=""> <i class="material-icons md-nights_stay"></i> </a>-->
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src="{% static 'assets/imgs/theme/flag-us.png' %}" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src="{% static 'assets/imgs/theme/flag-fr.png' %}" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src="{% static 'assets/imgs/theme/flag-jp.png' %}" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src="{% static 'assets/imgs/theme/flag-cn.png' %}" alt="Français">中国人</a>
+                        </div>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="{% static 'img/user-3.png'%}" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i> Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i> Settings</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="{% url 'admin_logout' %}"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+
+
+
