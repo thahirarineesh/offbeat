@@ -1,0 +1,87 @@
+<!-- category/category.html -->
+
+{% extends 'admin/admin_base.html' %}
+{% block content %}
+  {% load static %}
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-...",
+    crossorigin="anonymous" />
+
+</head>
+<body>
+  <div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <h4 class="mb-0">Category</h4>
+        <a href="{% url 'category' %}">Show All</a>
+        <div>
+          <a href="{% url 'add_category' %}" class="btn btn-success">Add category</a>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+          <thead>
+            <tr class="text-dark">
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Images</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for category in categories %}
+              <tr>
+                <td class="align-middle">{{ category.category_name }}</td>
+                <td class="align-middle">{{ category.description }}</td>
+                <td><img src="{{ category.image.url }}" alt="" width="100"></td>
+                <td class="align-middle">
+
+   <a href="{% url 'edit_category' category_id=category.id %}" class="edit">
+       <i class="fa fa-pencil-alt"></i>
+</a> <br><br>
+<a href="#" class="delete" onclick="confirmDelete('{{ category.id }}')">
+    <i class="fas fa-trash-alt"></i>
+  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+                  </div>
+<br>
+        <br>
+
+        <div class="pagination">
+        {% if categories.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ categories.previous_page_number }}"><i class="material-icons md-chevron_left"></i></a></li>
+        {% endif %}
+        <li class="page-item active"><a class="page-link" style="background-color:#088178" href="#">{{ categories.number }}</a></li>
+        {% if categories.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ categories.next_page_number }}"><i class="material-icons md-chevron_right"></i></a></li>
+        {% endif %}
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+<script>
+  function confirmDelete(categoryId) {
+    var confirmation = confirm("Are you sure you want to delete this category?");
+    if (confirmation) {
+      // If the user confirms, redirect to the delete URL
+      window.location.href = "{% url 'delete_category' category_id=0 %}".replace('0', categoryId);
+    }
+    // If the user cancels, do nothing
+  }
+</script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+{% endblock %}

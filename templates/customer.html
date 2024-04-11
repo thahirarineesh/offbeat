@@ -1,0 +1,73 @@
+{% extends 'admin/admin_base.html' %}
+{% block content %}
+{% load static %}
+
+
+
+    <!-- Table Start -->
+
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Customers</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for customer in page_obj %}
+                                  <tr>
+                                    <td>{{ customer.username }}</td>
+                                    <td>{{ customer.email }}</td>
+                                    <td>
+                                        {% if customer.is_active %}
+                                           Active
+                                        {% else %}
+                                           Blocked
+                                        {% endif %}
+                                    </td>
+                                    {% if customer.is_active %}
+                                        <td><a class="btn btn-sm btn-danger" href="{% url 'block_customer' customer_id=customer.id %}">Block</a></td>
+                                    {% else %}
+                                        <td><a class="btn btn-sm btn-success" href="{% url 'unblock_customer' customer_id=customer.id %}">Unblock</a></td>
+                                    {% endif %}
+                                  </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div><br>
+
+
+                       <div class="pagination-area mt-30 mb-50">
+                            <nav aria-label="Page navigation example">
+                                 <ul class="pagination justify-content-start">
+
+                                     <li class="page-item"><a class="page-link" href= "?page={{ page_obj.number }} "><i class="material-icons md-chevron_left"></i></a></li>
+                                      <li class="page-item active"><a class="page-link" href="#">{{page_obj.number}}</a></li>
+                                       <li class="page-item"><a class="page-link" href="?page={{ page_obj.number }}"><i class="material-icons md-chevron_right"></i></a></li>
+                                 </ul>
+                           </nav>
+                       </div>
+                   </div>
+                <br>
+                <br>
+                <br>
+
+
+<br>
+
+                <br>
+               </div>
+
+        <br>
+ {% endblock %}
+
+
+

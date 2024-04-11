@@ -1,0 +1,86 @@
+{% extends 'admin/admin_base.html' %}
+{% block content %}
+{% load static %}
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+</head>
+
+<body>
+  <div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <h4 class="mb-0">Products</h4>
+        <div>
+          <a href="{% url 'add_product' %}" class="btn btn-success">Add Product</a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+          <thead>
+            <tr class="text-dark">
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Images</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Price</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in page_obj %}
+            <tr>
+              <td class="align-middle">{{ product.product_name }}</td>
+              <td class="align-middle">{{ product.description }}</td>
+              <td><img src="{{ product.image.url }}" alt="" width="100"></td>
+              <td class="align-middle">{{ product.stock }}</td>
+              <td class="align-middle">{{ product.price }}</td>
+              <td class="align-middle">
+                <a href="{% url 'edit_product' product_id=product.id %}" class="edit">
+                  <i class="fa fa-pencil-alt"></i>
+                </a>
+                <br><br>
+                <a href="#" class="delete" onclick="confirmDelete('{{ product.id }}')">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <br>
+      <br>
+      <br>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-start">
+          {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+              <i class="material-icons md-chevron_left"></i></a></li>
+          {% endif %}
+          <li class="page-item active"><a class="page-link" style="background-color:#088178" href="#">{{ page_obj.number }}</a></li>
+          {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">
+              <i class="material-icons md-chevron_right"></i></a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <script>
+    function confirmDelete(productId) {
+      var confirmation = confirm("Are you sure you want to delete this product?");
+      if (confirmation) {
+        // If the user confirms, redirect to the delete URL
+        window.location.href = "{% url 'delete_product' product_id=0 %}".replace('0', productId);
+      }
+      // If the user cancels, do nothing
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}
