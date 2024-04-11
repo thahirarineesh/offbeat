@@ -8,10 +8,11 @@ from django.urls import reverse_lazy
 from django.db.models import Sum,Count
 import json
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from django.db.models.functions import TruncWeek,TruncMonth,TruncYear,ExtractWeek
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.utils.datetime_safe import datetime
 from django.views.decorators.cache import cache_control, never_cache
 from django.contrib import messages
@@ -132,6 +133,21 @@ def order(request):
         return render(request, "admin/orders.html", context)
     else:
         return redirect("admin")
+@login_required
+def admin_order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+    for order_item in order_items:
+        order_item.total = order_item.quantity * order_item.product.price
+
+    context = {
+        'order': order,
+        'order_items': order_items,
+
+    }
+    print(context)
+
+    return render(request, 'admin/admin_order_details.html', context)
 
 def updateorder(request):
     if request.method == "POST":
