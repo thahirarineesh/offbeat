@@ -133,21 +133,6 @@ def order(request):
         return render(request, "admin/orders.html", context)
     else:
         return redirect("admin")
-@login_required
-def admin_order_details(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    order_items = OrderItem.objects.filter(order=order)
-    for order_item in order_items:
-        order_item.total = order_item.quantity * order_item.product.price
-
-    context = {
-        'order': order,
-        'order_items': order_items,
-
-    }
-    print(context)
-
-    return render(request, 'admin/admin_order_details.html', context)
 
 def updateorder(request):
     if request.method == "POST":
