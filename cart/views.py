@@ -194,6 +194,7 @@ def remove_from_wishlist(request, wishlist_id):
     wishlist_item.delete()
     messages.success(request, f"{product_name} removed from your wishlist.")
     return redirect('wishlist_view')
+<<<<<<< HEAD
 def add_to_cart_from_wishlist(request, wishlist_id):
     wishlist_item = get_object_or_404(Wishlist, pk=wishlist_id, user=request.user)
     product = wishlist_item.product
@@ -220,6 +221,9 @@ def add_to_cart_from_wishlist(request, wishlist_id):
     print("Wishlist item:", wishlist_item)  # Debug message
 
     return redirect('cart')
+=======
+
+>>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
 
 @never_cache
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

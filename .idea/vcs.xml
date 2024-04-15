@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+<<<<<<< HEAD
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/newdir/my-offbeat-project" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/newdir/my-offbeat-project/offbeat" vcs="Git" />
+=======
+>>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
     <mapping directory="$PROJECT_DIR$/offbeatproject" vcs="Git" />
   </component>
 </project>

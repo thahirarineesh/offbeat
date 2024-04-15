@@ -12,7 +12,10 @@ urlpatterns = [
        path('wishlist/',views.wishlist_view, name='wishlist_view'),
        path('addtowishlist/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
        path('remove_from_wishlist/<int:wishlist_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+<<<<<<< HEAD
        path('add-to-cart-from-wishlist/<int:wishlist_id>/',views.add_to_cart_from_wishlist, name='add_to_cart_from_wishlist'),
+=======
+>>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
        path('checkout',views.checkout,name='checkout'),
        path('success/',views.ordersuccess,name='order_success'),
        path('placeorder/',views.placeorder,name='placeorder'),

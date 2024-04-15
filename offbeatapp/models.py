@@ -43,6 +43,9 @@ class Product(models.Model):
     product_offer = models.PositiveBigIntegerField(default=0, null=True)
     deleted = models.BooleanField(default=False)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
     def __str__(self):
         return self.product_name
