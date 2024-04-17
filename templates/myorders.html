@@ -70,7 +70,6 @@
             <tr>
                 <th>Order ID</th>
                 <th>Order Date</th>
-                <th>Total Amount</th>
                 <th>Status</th>
                 <th style="display: flex; flex-direction: column; align-items: center;">Action</th>
             </tr>
@@ -80,7 +79,6 @@
             <tr>
                 <td>{{ order.id }}</td>
                 <td>{{ order.date|date:"F j, Y" }}</td>
-                <td>{{ order.amount}}</td>
                 <td>{{ order.status }}</td>
                <td style="display: flex; flex-direction: column; align-items: center;">
                 <a href="{% url 'order_detail' order.id %}">
@@ -94,6 +92,18 @@
 </div>
 <br>
 <br>
+{% if order.status == 'on_hold' %}
+    <div class="alert alert-danger" role="alert">
+        Payment for this order has failed. Please retry payment or contact support for assistance.
+    </div>
+{% endif %}
+
+{% if order.status == 'on_hold' %}
+    <form method="post" action="{% url 'retry_payment' order_id=order.id %}">
+        {% csrf_token %}
+        <button type="submit">Retry Payment</button>
+    </form>
+{% endif %}
 {% endblock %}
 
 

@@ -51,7 +51,7 @@ def cart(request):
 
     discount = request.session.get("discount", 0)
     shipping_cost = 60
-    total = (subtotal + shipping_cost) - discount if subtotal else 0
+    total = subtotal + shipping_cost - discount if subtotal else 0
 
     context = {
         "cart_items": cart_items,
@@ -194,7 +194,6 @@ def remove_from_wishlist(request, wishlist_id):
     wishlist_item.delete()
     messages.success(request, f"{product_name} removed from your wishlist.")
     return redirect('wishlist_view')
-<<<<<<< HEAD
 def add_to_cart_from_wishlist(request, wishlist_id):
     wishlist_item = get_object_or_404(Wishlist, pk=wishlist_id, user=request.user)
     product = wishlist_item.product
@@ -221,9 +220,6 @@ def add_to_cart_from_wishlist(request, wishlist_id):
     print("Wishlist item:", wishlist_item)  # Debug message
 
     return redirect('cart')
-=======
-
->>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
 
 @never_cache
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -270,11 +266,11 @@ def placeorder(request):
     for cart_item in cart_items:
         itemprice2 = (cart_item.product.price) * (cart_item.quantity)
         subtotal += itemprice2
-
-    shipping_cost = 60
-    total = subtotal + shipping_cost if subtotal else 0
-
     discount = request.session.get("discount", 0)
+    shipping_cost = 60
+    total = subtotal + shipping_cost -discount if subtotal else 0
+
+
 
     if request.method == "POST":
         payment = request.POST.get("payment")
@@ -388,7 +384,7 @@ def order_invoice(request, order_id):
 
         subtotal = sum(order_item.product.price * order_item.quantity for order_item in order_items)
         shipping = 60
-        discount = coupon.discount if coupon else 0
+        discount = request.session.get("discount", 0)
         grand_total = subtotal + shipping - discount
         order_items = order.orderitem_set.all()
         for order_item in order_items:
@@ -462,7 +458,12 @@ def addcoupon(request):
             form.save()
 
         return redirect('coupon')
-
+def toggle_coupon_status(request, coupon_id):
+    if "admin" in request.session:
+        coupon = Coupon.objects.get(id=coupon_id)
+        coupon.status = not coupon.status  # Toggle the status
+        coupon.save()
+    return redirect('coupon')
 
 def apply_coupon(request):
     if request.method == "POST":
@@ -471,7 +472,7 @@ def apply_coupon(request):
 
             if coupon_code:  # Check if a coupon code was provided coupon from adminside
                 try:
-                    coupon = Coupon.objects.get(coupon_code=coupon_code)
+                    coupon = Coupon.objects.get(coupon_code=coupon_code,is_expired=False,status=True)
                 except Coupon.DoesNotExist:
                     messages.error(request, "Invalid coupon code")
                     return redirect("cart")
@@ -479,7 +480,7 @@ def apply_coupon(request):
                 user = request.user
                 cart_items = Cart.objects.filter(user=user)
                 subtotal = 0
-                shipping_cost = 10
+                shipping_cost = 60
                 total_dict = {}
                 coupons = Coupon.objects.all()
 
@@ -597,10 +598,11 @@ def proceedtopay(request):
     total = 0
     shipping = 60
     subtotal = 0
+    discount = request.session.get("discount", 0)
     for cart_item in cart:
         itemprice = (cart_item.product.price) * (cart_item.quantity)
 
-        subtotal = subtotal + itemprice
+        subtotal = subtotal + itemprice-discount
 
     total = subtotal + shipping
     return JsonResponse({"total": total})
@@ -609,13 +611,14 @@ def razorpay(request, address_id):
     user = request.user
     cart_items = Cart.objects.filter(user=user)
     subtotal = 0
+    discount = request.session.get("discount", 0)
     for cart_item in cart_items:
         itemprice = (cart_item.product.price) * (cart_item.quantity)
 
-        subtotal = subtotal + itemprice
+        subtotal = subtotal + itemprice-discount
 
     shipping_cost = 60
-    total = subtotal + shipping_cost if subtotal else 0
+    total = subtotal + shipping_cost -discount if subtotal else 0
 
     payment = "razorpay"
     user = request.user
@@ -643,3 +646,21 @@ def razorpay(request, address_id):
 
     cart_items.delete()
     return redirect("order_success")
+
+
+def retry_payment(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+
+        # Logic to retry payment
+        # For example, you might want to update the payment status and redirect to a payment gateway
+        # This is just a placeholder
+
+        order.status = 'on_hold'  # Update payment status to indicate retrying
+        order.save()
+
+        messages.success(request, 'Payment retry initiated successfully.')
+    except Order.DoesNotExist:
+        messages.error(request, 'Order not found.')
+
+    return redirect('order_detail', order_id=order_id)

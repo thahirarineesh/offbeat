@@ -21,6 +21,8 @@
                             <th scope="col">Coupon code</th>
                             <th scope="col">Discount price</th>
                             <th scope="col">Minimum amount</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +31,15 @@
                                 <td>{{ coupon.coupon_code }}</td>
                                 <td>{{ coupon.discount_price }}</td>
                                 <td>{{ coupon.minimum_amount }}</td>
+                                <td>{% if coupon.status %} Active {% else %} Inactive {% endif %}</td>
+            <td>
+                <form method="post" action="{% url 'toggle_coupon_status' coupon.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm {% if coupon.status %} btn-danger {% else %} btn-success {% endif %}">
+                        {% if coupon.status %} Deactivate {% else %} Activate {% endif %}
+                    </button>
+                </form>
+            </td>
                             </tr>
                         {% endfor %}
                     </tbody>

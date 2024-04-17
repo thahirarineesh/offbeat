@@ -52,11 +52,8 @@
                                     {% endif %}</p>
                                 <p>Quantity:
                                     <span id="quantity-display-{{ cart_item.id }}">{{ cart_item.quantity }}</span>
-<<<<<<< HEAD
                                 <div class="input-group mb-3" >
-=======
                                 <div class="input-group mb-3" style="max-width: 120px;">
->>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
                                     <div class="input-group-prepend">
                                         <button class="btn btn-sm btn-primary"
                                                 onclick="updateQuantity('{{ cart_item.product.id }}', 'decrease')"
@@ -88,19 +85,21 @@
                                                 onclick="confirmRemove('{{ cart_item.id }}')"
                                                 style="background-color:black;"><i class="">Remove</i>
                                         </button>
+
                                     </form>
+
                                 </div>
+
+
 
                                 </p>
                             </div>
+
+
                         </div>
                     </div>
-                    <br>
-
-
-                    <br>
-                    <hr>
-
+                    </div>
+<hr>
                     </td>
 
                 </tr>
@@ -122,21 +121,21 @@
                 </ul>
             </div>
             {% endif %}
-            <form method="post" class="mb-5" action="{% url 'apply_coupon' %}">
-                {% csrf_token %}
-                <div class="input-group">
-                    <input type="text" class="form-control p-4" placeholder="Coupon Code" list="couponList"
-                           name="coupon_code">
-                    <datalist id="couponList">
-                        {% for coupon in coupons %}
-                        <option value="{{ coupon.coupon_code }}">
-                            {% endfor %}
-                    </datalist>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" style="background-color:black;">Apply Coupon</button>
-                    </div>
-                </div>
-            </form>
+           <form method="post" class="mb-5" action="{% url 'apply_coupon' %}">
+    {% csrf_token %}
+    <div class="input-group">
+        <input type="text" class="form-control p-4" placeholder="Coupon Code" list="couponList" name="coupon_code">
+        <datalist id="couponList">
+            {% for coupon in coupons %}
+            <option value="{{ coupon.coupon_code }}">
+            {% endfor %}
+        </datalist>
+        <div class="input-group-append">
+            <button class="btn btn-primary" style="background-color:black;">Apply Coupon</button>
+        </div>
+    </div>
+</form>
+
             {% if request.session.discount %}
             <form method="post" action="{% url 'apply_coupon' %}">
                 {% csrf_token %}

@@ -12,10 +12,7 @@ urlpatterns = [
        path('wishlist/',views.wishlist_view, name='wishlist_view'),
        path('addtowishlist/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
        path('remove_from_wishlist/<int:wishlist_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
-<<<<<<< HEAD
        path('add-to-cart-from-wishlist/<int:wishlist_id>/',views.add_to_cart_from_wishlist, name='add_to_cart_from_wishlist'),
-=======
->>>>>>> ad1ccebe2dc1cab1ae7d6af9981a0bef86943c2c
        path('checkout',views.checkout,name='checkout'),
        path('success/',views.ordersuccess,name='order_success'),
        path('placeorder/',views.placeorder,name='placeorder'),
@@ -25,6 +22,7 @@ urlpatterns = [
        path('user_cancel_order/', views.user_cancel_order, name='user_cancel_order'),
        path('coupon/', views.coupon, name='coupon'),
        path('addcoupon/', views.addcoupon, name='addcoupon'),
+       path('toggle-coupon-status/<int:coupon_id>/', views.toggle_coupon_status, name='toggle_coupon_status'),
        path('apply_coupon/', views.apply_coupon, name='apply_coupon'),
        path('wallet/',views.wallet,name='wallet'),
        path('pay-with-wallet/', views.pay_with_wallet, name='pay_with_wallet'),

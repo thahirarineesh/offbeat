@@ -49,6 +49,97 @@
                             </div>
                         </div>
                     </section>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Latest Orders Section -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h2 class="mb-0">Latest Orders</h2>
+        </div>
+        <div class="table-responsive">
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                    <thead>
+                    <tr class="text-dark text-center">
+                        <th scope="col">Order id</th>
+                        <th scope="col">Date of purchase</th>
+                        <th scope="col">User name</th>
+                        <th>Address</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Payment type</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+
+                    <td class="text-dark text-center">
+                        {% if order.orderitem_set.all %}
+                        <h6 class="fw-semibold mb-1">
+                            <a href="#">{{ order.id }}</a>
+
+                        </h6>
+                        {% else %}
+                        <p class="mb-0 fw-normal">No order id</p>
+                        {% endif %}
+                    </td>
+                    <td class="text-dark text-center">{{ order.date}}</td>
+
+                    <td class="text-dark text-center">{{ order.address.first_name }}</td>
+                   <td class="text-dark text-center">
+                    {{ order.address.address1 }}<br>
+                   {{ order.address.city }}, {{ order.address.state }}<br>
+                    {{ order.address.zip_code }}
+                </p>
+                    </td>
+
+                    <td class="text-dark text-center">{{order.address.adrees1}}</td>
+
+                    <td  class="text-dark text-center">
+                        {% if order.orderitem_set.all %}
+                        {% for order_item in order.orderitem_set.all %}
+
+                        <h6 class="fw-semibold mb-1">
+                            {{ order_item.product.product_name }} (x{{ order_item.quantity }})
+                        </h6>
+                        {% endfor %}
+                        {% else %}
+
+                        <p class="mb-0 fw-normal">No products</p>
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-dark text-center">{{order.amount}}</td>
+
+                    <td class="text-dark text-center">{{order.payment_type}}</td>
+
+
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </form>
+
+        </div>
+    </div>
+
+<!-- End Latest Orders Section -->
+
+
+
                     <!-- End Sales Chart Section -->
 
                     <!-- Best Selling Products Section -->
@@ -95,6 +186,7 @@
                                                     </div>
                                                     <div class="info-wrap ml-2">
                                                         <p style="color:white;">{{ category.category_name }}</p>
+
                                                     </div>
                                                 </div>
                                                 <br>
@@ -133,9 +225,15 @@
             labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
             chartTitle.innerText = 'Last One Week Chart';
         } else if (timeRange === 'year') {
-            labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            chartTitle.innerText = 'Yearly Chart';
+           const currentDate = new Date();
+           const currentYear = currentDate.getFullYear();
+           const currentMonthIndex = currentDate.getMonth(); // Get the index of the current month (0-indexed)
+           labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+          // Update labels to include only months up to the current month
+           labels = labels.slice(0, currentMonthIndex + 1);
+
+            chartTitle.innerText = 'Yearly Chart (' + currentYear + ')';
         }
 
         // Destroy the existing chart if it exists

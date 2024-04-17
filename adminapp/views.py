@@ -8,12 +8,18 @@ from django.urls import reverse_lazy
 from django.db.models import Sum,Count
 import json
 from django.http import JsonResponse
-
+from django.db.models import Sum, DecimalField, F
+from django.db.models.functions import Cast
 from django.db.models.functions import TruncWeek,TruncMonth,TruncYear,ExtractWeek
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_required
-
+from datetime import datetime, timedelta
+from decimal import Decimal
+import matplotlib.pyplot as plt
+import io
+import base64
 from django.db.models.functions import TruncWeek,TruncMonth,TruncYear,ExtractWeek
+from decimal import Decimal
 
 from django.shortcuts import render,redirect,get_object_or_404
 from django.utils.datetime_safe import datetime
@@ -31,6 +37,7 @@ from offbeatapp.models import *
 from shop.models import *
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.lib import colors
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 
@@ -67,58 +74,85 @@ def admin_logout(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
 def dashboard(request):
-    admin_name = "Thahira"
-    products_with_more_orders = Product.objects.annotate(order_count=Count('order')).order_by('-order_count')[:6]
-    categories_with_most_orders = Category.objects.annotate(order_count=Count('product__order')).order_by('-order_count')[:6]
-    latest_orders = Order.objects.order_by("-id")[:5]
-    order_item_counts = OrderItem.objects.values('product').annotate(order_item_count=Count('id'))
-    labels = []
-    data = []
-    for order in latest_orders:
+    if "admin" in request.session:
+      admin_name = "Thahira"
+      products_with_more_orders = Product.objects.annotate(order_count=Count('order')).order_by('-order_count')[:6]
+      categories_with_most_orders = Category.objects.annotate(order_count=Count('product__order__id')).order_by('-order_count')[:6]
+      orders = Order.objects.all().order_by("-id")[:6]
+      order_item_counts = OrderItem.objects.values('product').annotate(order_item_count=Count('id'))
+      labels = []
+      data = []
+      for order in orders:
         labels.append(str(order.id))
         data.append(order.amount)
 
-    context = {
-        "labels": json.dumps(labels),
-        "data": json.dumps(data),
+      context = {
+        "admin_name": admin_name,
         'products_with_more_orders': products_with_more_orders,
         'categories_with_most_orders': categories_with_most_orders,
-        "admin_name": admin_name,
-        'order_item_counts': order_item_counts
-    }
+        'labels': json.dumps(labels),
+        'data': json.dumps(data),
+        'order_item_counts': order_item_counts,
+        'orders':orders
 
-    if "admin" in request.session:
-        time_range = request.POST.get('time_range', 'month')
-        context['time_range'] = time_range
-        if time_range == 'month':
-                monthly_sales = Order.objects.annotate(month=TruncMonth('date')).values('month').annotate(
-                total_sales=Count('id')).order_by('month')
-                labels = [sales['month'].strftime('%B') for sales in monthly_sales]
-                data = [sales['total_sales'] for sales in monthly_sales]
-        elif time_range == 'year':
-                 yearly_sales = Order.objects.annotate(year=TruncYear('date')).values('year').annotate(
-                 total_sales=Count('id')).order_by('year')
-                 labels = [f"Year {sales['year'].year}" for sales in yearly_sales]
-                 data = [sales['total_sales'] for sales in yearly_sales]
-        elif time_range == 'week':
-               weekly_sales = Order.objects.annotate(week=ExtractWeek('date')).values('week').annotate(
-               total_sales=Count('id')).order_by('week')
-               labels = [f"Week {sales['week']}" for sales in weekly_sales]
-               data = [sales['total_sales'] for sales in weekly_sales]
-        else:
-            monthly_sales = Order.objects.annotate(month=TruncMonth('date')).values('month').annotate(
-            total_sales=Count('id')).order_by('month')
-            labels = [sales['month'].strftime('%B') for sales in monthly_sales]
-            data = [sales['total_sales'] for sales in monthly_sales]
-        context={
-                'labels': labels,
-                'data': data,
-                'time_range': time_range,
-        }
 
-        return render(request, "dashboard.html", context)
-    else:
-        return redirect("admin")
+      }
+      return render(request, "dashboard.html", context)
+
+# def dashboard(request):
+#     admin_name = "Thahira"
+#     products_with_more_orders = Product.objects.annotate(order_count=Count('order')).order_by('-order_count')[:6]
+#     categories_with_most_orders = Category.objects.annotate(order_count=Count('product__order')).order_by('-order_count')[:6]
+#     latest_orders = Order.objects.order_by("-id")[:5]
+#     order_item_counts = OrderItem.objects.values('product').annotate(order_item_count=Count('id'))
+#     labels = []
+#     data = []
+#     for order in latest_orders:
+#         labels.append(str(order.id))
+#         data.append(order.amount)
+#
+#
+#     context = {
+#         "labels": json.dumps(labels),
+#         "data": json.dumps(data),
+#         'products_with_more_orders': products_with_more_orders,
+#         'categories_with_most_orders': categories_with_most_orders,
+#         "admin_name": admin_name,
+#         'order_item_counts': order_item_counts,
+#     }
+    #
+    # if "admin" in request.session:
+    #     time_range = request.POST.get('time_range', 'month')
+    #     context['time_range'] = time_range
+    #     if time_range == 'month':
+    #             monthly_sales = Order.objects.annotate(month=TruncMonth('date')).values('month').annotate(
+    #             total_sales=Count('id')).order_by('month')
+    #             labels = [sales['month'].strftime('%B') for sales in monthly_sales]
+    #             data = [sales['total_sales'] for sales in monthly_sales]
+    #     elif time_range == 'year':
+    #              yearly_sales = Order.objects.annotate(year=TruncYear('date')).values('year').annotate(
+    #              total_sales=Count('id')).order_by('year')
+    #              labels = [f"Year {sales['year'].year}" for sales in yearly_sales]
+    #              data = [sales['total_sales'] for sales in yearly_sales]
+    #     elif time_range == 'week':
+    #            weekly_sales = Order.objects.annotate(week=ExtractWeek('date')).values('week').annotate(
+    #            total_sales=Count('id')).order_by('week')
+    #            labels = [f"Week {sales['week']}" for sales in weekly_sales]
+    #            data = [sales['total_sales'] for sales in weekly_sales]
+    #     else:
+    #         monthly_sales = Order.objects.annotate(month=TruncMonth('date')).values('month').annotate(
+    #         total_sales=Count('id')).order_by('month')
+    #         labels = [sales['month'].strftime('%B') for sales in monthly_sales]
+    #         data = [sales['total_sales'] for sales in monthly_sales]
+    #     context={
+    #             'labels': labels,
+    #             'data': data,
+    #             'time_range': time_range,
+    #     }
+
+    # return render(request, "dashboard.html", context)
+    # else:
+    #     return redirect("admin")
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
@@ -215,7 +249,7 @@ def return_order(request):
             if order.status in ['delivered']:
                 order.status = 'returned'
                 order.save()
-                if order.payment_type!='cod':
+                if order.payment_type == 'cod' or order.payment_type == 'razorpay':
                   wallets.amount += int(order.amount)
                   wallets.save()
 
@@ -273,7 +307,10 @@ def report_generator(request, orders):
     return FileResponse(buf, as_attachment=True, filename='orders_report.pdf')
 
 def report_pdf_order(request):
+    orders = Order.objects.all().order_by("-id")
+
     if request.method == 'POST':
+
         from_date = request.POST.get('from_date')
         to_date = request.POST.get('to_date')
         try:
@@ -283,4 +320,5 @@ def report_pdf_order(request):
             return HttpResponse('Invalid date format.')
         orders = Order.objects.filter(date__range=[from_date, to_date]).order_by('-id')
         return report_generator(request, orders)
-    return render(request,'hello.html')
+
+    return render(request,'hello.html',context={'orders': orders})

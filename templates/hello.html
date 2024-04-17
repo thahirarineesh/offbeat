@@ -1,8 +1,85 @@
 {% extends 'admin/admin_base.html' %}
 {% block content %}
 {% load static %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h2 class="mb-0"> Orders Report</h2>
+        </div>
+        <div class="table-responsive">
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                    <thead>
+                    <tr class="text-dark text-center">
+                        <th scope="col">Order id</th>
+                        <th scope="col">Date of purchase</th>
+                        <th scope="col">User name</th>
+                        <th>Address</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Payment type</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+
+                    <td class="text-dark text-center">
+                        {% if order.orderitem_set.all %}
+                        <h6 class="fw-semibold mb-1">
+                            <a href="#">{{ order.id }}</a>
+
+                        </h6>
+                        {% else %}
+                        <p class="mb-0 fw-normal">No order id</p>
+                        {% endif %}
+                    </td>
+                    <td class="text-dark text-center">{{ order.date}}</td>
+
+                    <td class="text-dark text-center">{{ order.address.first_name }}</td>
+                   <td class="text-dark text-center">
+                    {{ order.address.address1 }}<br>
+                   {{ order.address.city }}, {{ order.address.state }}<br>
+                    {{ order.address.zip_code }}
+                </p>
+                    </td>
+
+                    <td class="text-dark text-center">{{order.address.adrees1}}</td>
+
+                    <td  class="text-dark text-center">
+                        {% if order.orderitem_set.all %}
+                        {% for order_item in order.orderitem_set.all %}
+
+                        <h6 class="fw-semibold mb-1">
+                            {{ order_item.product.product_name }} (x{{ order_item.quantity }})
+                        </h6>
+                        {% endfor %}
+                        {% else %}
+
+                        <p class="mb-0 fw-normal">No products</p>
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-dark text-center">{{order.amount}}</td>
+
+                    <td class="text-dark text-center">{{order.payment_type}}</td>
+
+
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </form>
+
+        </div>
+    </div>
 <div class="mt-5">
-    <h2>Order Report</h2><hr>
+    <h2>Generate pdf</h2><hr>
 </div>
 <div class="row mb-3">
     <div class="col-md-6">
