@@ -99,60 +99,7 @@ def dashboard(request):
       }
       return render(request, "dashboard.html", context)
 
-# def dashboard(request):
-#     admin_name = "Thahira"
-#     products_with_more_orders = Product.objects.annotate(order_count=Count('order')).order_by('-order_count')[:6]
-#     categories_with_most_orders = Category.objects.annotate(order_count=Count('product__order')).order_by('-order_count')[:6]
-#     latest_orders = Order.objects.order_by("-id")[:5]
-#     order_item_counts = OrderItem.objects.values('product').annotate(order_item_count=Count('id'))
-#     labels = []
-#     data = []
-#     for order in latest_orders:
-#         labels.append(str(order.id))
-#         data.append(order.amount)
-#
-#
-#     context = {
-#         "labels": json.dumps(labels),
-#         "data": json.dumps(data),
-#         'products_with_more_orders': products_with_more_orders,
-#         'categories_with_most_orders': categories_with_most_orders,
-#         "admin_name": admin_name,
-#         'order_item_counts': order_item_counts,
-#     }
-    #
-    # if "admin" in request.session:
-    #     time_range = request.POST.get('time_range', 'month')
-    #     context['time_range'] = time_range
-    #     if time_range == 'month':
-    #             monthly_sales = Order.objects.annotate(month=TruncMonth('date')).values('month').annotate(
-    #             total_sales=Count('id')).order_by('month')
-    #             labels = [sales['month'].strftime('%B') for sales in monthly_sales]
-    #             data = [sales['total_sales'] for sales in monthly_sales]
-    #     elif time_range == 'year':
-    #              yearly_sales = Order.objects.annotate(year=TruncYear('date')).values('year').annotate(
-    #              total_sales=Count('id')).order_by('year')
-    #              labels = [f"Year {sales['year'].year}" for sales in yearly_sales]
-    #              data = [sales['total_sales'] for sales in yearly_sales]
-    #     elif time_range == 'week':
-    #            weekly_sales = Order.objects.annotate(week=ExtractWeek('date')).values('week').annotate(
-    #            total_sales=Count('id')).order_by('week')
-    #            labels = [f"Week {sales['week']}" for sales in weekly_sales]
-    #            data = [sales['total_sales'] for sales in weekly_sales]
-    #     else:
-    #         monthly_sales = Order.objects.annotate(month=TruncMonth('date')).values('month').annotate(
-    #         total_sales=Count('id')).order_by('month')
-    #         labels = [sales['month'].strftime('%B') for sales in monthly_sales]
-    #         data = [sales['total_sales'] for sales in monthly_sales]
-    #     context={
-    #             'labels': labels,
-    #             'data': data,
-    #             'time_range': time_range,
-    #     }
 
-    # return render(request, "dashboard.html", context)
-    # else:
-    #     return redirect("admin")
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
